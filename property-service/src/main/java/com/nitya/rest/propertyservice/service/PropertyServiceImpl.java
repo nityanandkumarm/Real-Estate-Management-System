@@ -19,8 +19,12 @@ import com.nitya.rest.propertyservice.repository.PropertyRepository;
 @Service
 public class PropertyServiceImpl implements PropertyService {
 
+	private final PropertyRepository propertyRepo;
+
 	@Autowired
-	private PropertyRepository propertyRepo;
+	PropertyServiceImpl(PropertyRepository propertyRepo){
+		this.propertyRepo = propertyRepo;
+	}
 
 	@Override
 	public List<PropertyData> findAllPropertyDetails() {
@@ -29,7 +33,7 @@ public class PropertyServiceImpl implements PropertyService {
 			throw new PropertyNotFoundException("");
 		}
 		List<PropertyData> propertyListData = new ArrayList<>();
-		propertyList.stream().forEach(property -> {
+		propertyList.forEach(property -> {
 			PropertyData propertyData = new PropertyData();
 			BeanUtils.copyProperties(property, propertyData);
 			propertyListData.add(propertyData);
@@ -45,7 +49,7 @@ public class PropertyServiceImpl implements PropertyService {
 			throw new PropertyNotFoundException("for provider: " + provider);
 		}
 		List<PropertyData> propertyListData = new ArrayList<>();
-		propertyDetailsList.stream().forEach(property -> {
+		propertyDetailsList.forEach(property -> {
 			PropertyData propertyData = new PropertyData();
 			BeanUtils.copyProperties(property, propertyData);
 			propertyListData.add(propertyData);

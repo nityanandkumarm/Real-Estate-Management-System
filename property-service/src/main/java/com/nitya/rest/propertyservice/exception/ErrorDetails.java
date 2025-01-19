@@ -6,13 +6,13 @@ public class ErrorDetails {
 	
 	private LocalDateTime time;
 	private String message;
-	private String Details;
+	private String details;
 	
 	public ErrorDetails(LocalDateTime localDateTime, String message, String details) {
 		super();
 		this.time = localDateTime;
 		this.message = message;
-		Details = details;
+		this.details = details;
 	}
 	public LocalDateTime getTime() {
 		return time;
@@ -27,10 +27,10 @@ public class ErrorDetails {
 		this.message = message;
 	}
 	public String getDetails() {
-		return Details;
+		return details;
 	}
 	public void setDetails(String details) {
-		Details = details;
+		this.details = details;
 	}
 	
 }
