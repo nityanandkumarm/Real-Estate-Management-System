@@ -2,6 +2,7 @@ package com.nitya.rest.users.service;
 
 import java.util.List;
 
+import com.nitya.rest.users.entity.User;
 import org.springframework.http.ResponseEntity;
 
 import com.nitya.rest.users.entity.UserData;
@@ -15,5 +16,5 @@ public interface UsersService {
 	
 	public void deleteUserDetailsById(Integer id);
 	
-	public ResponseEntity<?> registerUser(UserData user);
+	public ResponseEntity<User> registerUser(UserData user);
 }

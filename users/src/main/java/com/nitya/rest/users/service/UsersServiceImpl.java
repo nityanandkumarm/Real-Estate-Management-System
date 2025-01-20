@@ -73,7 +73,7 @@ public class UsersServiceImpl implements UsersService {
 	}
 
 	@Override
-	public ResponseEntity<?> registerUser(UserData userData) {
+	public ResponseEntity<User> registerUser(UserData userData) {
 		Optional<User> userDetails = userRepo.findByUsername(userData.getUsername());
 		if (userDetails.isPresent()) {
 			throw new ResponseStatusException(

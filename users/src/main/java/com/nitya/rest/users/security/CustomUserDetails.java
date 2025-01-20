@@ -1,5 +1,6 @@
 package com.nitya.rest.users.security;
 
+import java.io.Serial;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -16,15 +17,16 @@ public class CustomUserDetails implements UserDetails {
 	/**
 	 * 
 	 */
+	@Serial
 	private static final long serialVersionUID = 6527488193717761382L;
-	private String name;
-	private String password;
-	private List<GrantedAuthority> authorities;
+	private final String name;
+	private final String password;
+	private final List<GrantedAuthority> authorities;
 
 	public CustomUserDetails(User user) {
 		name = user.getUsername();
 		password = user.getPassword();
-		authorities = Arrays.stream(user.getRole().split(",")).map(SimpleGrantedAuthority::new)
+		authorities = Arrays.stream(",".split(user.getRole())).map(SimpleGrantedAuthority::new)
 				.collect(Collectors.toList());
 	}
 

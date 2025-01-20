@@ -2,6 +2,7 @@ package com.nitya.rest.users.controller;
 
 import java.util.List;
 
+import com.nitya.rest.users.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -23,14 +24,18 @@ import jakarta.validation.Valid;
 @RestController
 public class UsersController {
 
+	private final UsersServiceImpl usersServiceImpl;
+
+	private final WishlistServiceProxy wishlistProxy;
+
+	private final PropertyServiceProxy propertyProxy;
+
 	@Autowired
-	private UsersServiceImpl usersServiceImpl;
-	
-	@Autowired
-	private WishlistServiceProxy wishlistProxy;
-	
-	@Autowired
-	private PropertyServiceProxy propertyProxy;
+	UsersController(UsersServiceImpl usersServiceImpl, WishlistServiceProxy wishlistProxy, PropertyServiceProxy propertyProxy){
+		this.wishlistProxy = wishlistProxy;
+		this.propertyProxy = propertyProxy;
+		this.usersServiceImpl = usersServiceImpl;
+	}
 
 	@PreAuthorize("hasAuthority('ROLE_ADMIN')")
 	@GetMapping(path = "/users")
@@ -46,18 +51,25 @@ public class UsersController {
 
 	
 	@PostMapping(path = "/register")
-	public ResponseEntity<?> registerNewUser(@Valid @RequestBody UserData userData) {
+	public ResponseEntity<User> registerNewUser(@Valid @RequestBody UserData userData) {
 		return usersServiceImpl.registerUser(userData);
 	}
 
-	//dependency on wishlist-service indirectly
+	/**
+	 * Dependency on wishlist-service indirectly
+	 * @param id
+	 */
 	@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
 	@DeleteMapping(path = "/users/{id}")
 	public void deRegisterUser(@PathVariable Integer id) {
 		usersServiceImpl.deleteUserDetailsById(id);
 	}
-	
-	//dependency on wishlist-service directly
+
+	/**
+	 * Dependency on wishlist-service directly
+	 * @param id
+	 * @return List<Integer>
+	 */
 	@PreAuthorize("hasAuthority('ROLE_USER')")
 	@GetMapping(path = "/users/{id}/wishlist")
 	public List<Integer> getWishlist(@PathVariable Integer id) {
@@ -75,8 +87,11 @@ public class UsersController {
 	public void deleteItemsFromWishlist(@PathVariable Integer id, @RequestBody Integer propertyId) {
 		wishlistProxy.deleteFromWishlist(id, propertyId);
 	}
-	
-	//dependency on property-service
+
+	/**
+	 * Dependency on property-service
+	 * @return List<PropertyData>
+	 */
 	@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
 	@GetMapping(path = "/properties")
 	public List<PropertyData> getAllPropertyDetails() {
@@ -94,10 +109,10 @@ public class UsersController {
 	public ResponseEntity<PropertyData> addPropertyDetails(@PathVariable String provider, @Valid @RequestBody PropertyData property) {
 		return propertyProxy.addProperty(provider, property);
 	}
-	
+
 	@DeleteMapping(path = "/properties/{provider}")
 	@PreAuthorize("hasAuthority('ROLE_ADMIN')")
-	public void deteleAllPropertyDetailsByProvider(@PathVariable String provider) {
+	public void deleteAllPropertyDetailsByProvider(@PathVariable String provider) {
 		propertyProxy.deleteAllPropertiesByProvider(provider);
 	}
 

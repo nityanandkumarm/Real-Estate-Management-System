@@ -9,7 +9,7 @@ public class WishlistData {
 
 	private Integer userId;
 
-	private List<Integer> propertyIds = new ArrayList<Integer>();
+	private final List<Integer> propertyIds = new ArrayList<>();
 
 	public WishlistData() {
 	}
